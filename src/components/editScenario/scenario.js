@@ -57,16 +57,17 @@ export function EditScenario() {
 
   useEffect(() => {
     setCasts(data ? JSON.parse(data.casts) : []);
-    
+
+    // console.log(data ? JSON.parse(data.casts).find(cast => cast.name === 'duhan') : [])
     let castFeatures = data ? JSON.parse(data.castFeatures) : []
     castFeatures.forEach((cf) => {
-      cf.cast = data ? JSON.parse(data.casts) : [].find(cast => cast.id === cf.cast.id)
+      cf.cast = data ? JSON.parse(data.casts).find(cast => cast.id === cf.cast.id):null
     })
     setCastFeatures(castFeatures);
 
     let fullScript = data ? JSON.parse(data.script) : []
     fullScript.forEach((fs) => {
-      fs.cast = data ? JSON.parse(data.casts) : [].find(cast => cast.id === fs.cast.id)
+      fs.cast = data ? JSON.parse(data.casts).find(cast => cast.id === fs.cast.id) : null
     });
     setFullScript(fullScript);
     
