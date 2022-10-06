@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const scenarioAPI = createApi({
   reducerPath: "scenarioAPI",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://scenario-back.herokuapp.com/" }),
   endpoints: (builder) => ({
     addScenario: builder.mutation({
       query: (payload) => ({
