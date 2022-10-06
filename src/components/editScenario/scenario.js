@@ -43,13 +43,13 @@ export function EditScenario() {
     //castFeatures
     let newCastFeatures = [...castFeatures];
     newCastFeatures = newCastFeatures.filter((cf) =>
-      castIds.includes(cf.cast.id)
+      castIds.includes(cf.cast?.id)
     );
     setCastFeatures(newCastFeatures);
 
     // //fullScript
     let newFs = [...fullScript];
-    newFs = newFs.filter((fs) => castIds.includes(fs.cast.id));
+    newFs = newFs.filter((fs) => castIds.includes(fs.cast?.id));
     setFullScript(newFs);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,22 +58,22 @@ export function EditScenario() {
   useEffect(() => {
     setCasts(data ? JSON.parse(data.casts) : []);
 
-    // console.log(data ? JSON.parse(data.casts).find(cast => cast.name === 'duhan') : [])
     let castFeatures = data ? JSON.parse(data.castFeatures) : []
     castFeatures.forEach((cf) => {
-      cf.cast = data ? JSON.parse(data.casts).find(cast => cast.id === cf.cast.id):null
+      cf.cast = casts.length > 0 ? casts.find(cast => cast.id === cf.cast.id):null
     })
+
     setCastFeatures(castFeatures);
 
     let fullScript = data ? JSON.parse(data.script) : []
     fullScript.forEach((fs) => {
-      fs.cast = data ? JSON.parse(data.casts).find(cast => cast.id === fs.cast.id) : null
+      fs.cast = casts.length > 0 ? casts.find(cast => cast.id === fs.cast.id):null
     });
     setFullScript(fullScript);
     
     setFormGroupInfo({
       title: {
-        value: data ? data.title : "ss",
+        value: data ? data.title : "",
         isValid: data ? true : null,
         reasonForInvalid: "",
       },
@@ -335,12 +335,12 @@ export function EditScenario() {
           castFeatures.map((cI, index) => (
             <Card
               className="my-2"
-              color={castColors[cI.cast.colorIndex]}
+              color={castColors[cI.cast?.colorIndex]}
               inverse
               key={index}
             >
               <CardHeader>
-                {cI.cast.name}{" "}
+                {cI.cast?.name}{" "}
                 <AiOutlineCloseCircle
                   onClick={() => {
                     if (
@@ -387,7 +387,7 @@ export function EditScenario() {
           ? fullScript.map((fs, index) => (
               <>
                 <Card
-                  color={castColors[fs.cast.colorIndex]}
+                  color={castColors[fs.cast?.colorIndex]}
                   key={index}
                   className="card"
                 >
