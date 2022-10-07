@@ -23,9 +23,7 @@ export function EditScenario() {
   const [casts, setCasts] = useState([]);
   const [activeCast, setActiveCast] = useState(null);
   const [castFeatures, setCastFeatures] = useState([]);
-  const [fullScript, setFullScript] = useState(
-    data ? JSON.parse(data.script) : []
-  );
+  const [fullScript, setFullScript] = useState([]);
   const castColors = [
     "secondary",
     "primary",
@@ -56,21 +54,38 @@ export function EditScenario() {
   }, [casts]);
 
   useEffect(() => {
-    setCasts(data ? JSON.parse(data.casts) : []);
-
-    let castFeatures = data ? JSON.parse(data.castFeatures) : []
-    castFeatures.forEach((cf) => {
-      cf.cast = casts.length > 0 ? casts.find(cast => cast.id === cf.cast.id):null
-    })
-
-    setCastFeatures(castFeatures);
-
-    let fullScript = data ? JSON.parse(data.script) : []
-    fullScript.forEach((fs) => {
-      fs.cast = casts.length > 0 ? casts.find(cast => cast.id === fs.cast.id):null
+    //casts
+    let incomingCasts = data ? JSON.parse(data.casts) : [];
+    let c = [...casts];
+    incomingCasts.forEach((iC) => {
+      c.push({
+        id: iC["id"],
+        name: iC["name"],
+        colorIndex: iC["colorIndex"],
+      });
     });
-    setFullScript(fullScript);
-    
+
+    let incomingCastFeatures = data ? JSON.parse(data.castFeatures) : [];
+    let cf = [...castFeatures];
+    incomingCastFeatures.forEach((el) => {
+      cf.push({
+        cast: c[c.findIndex((cast) => cast.id === el.cast.id)],
+        features: el["features"]
+      })
+    });
+
+    let incomingFullScript = data ? JSON.parse(data.script) : [];
+    let fs = [...fullScript]
+    incomingFullScript.forEach((el) => {
+      fs.push({
+        cast:c[c.findIndex((cast) => cast.id === el.cast.id)],
+        text:el["text"]
+      })
+    });
+    setCasts(c);
+    setCastFeatures(cf);
+    setFullScript(fs);
+
     setFormGroupInfo({
       title: {
         value: data ? data.title : "",
@@ -216,14 +231,14 @@ export function EditScenario() {
     try {
       e.preventDefault();
       if (titleValid && subtitleValid && venueValid) {
-        console.log(JSON.stringify(castFeatures))
+        console.log(JSON.stringify(castFeatures));
         editScenario({
           id: data._id,
           title: formGroupInfo.title.value,
           subtitle: formGroupInfo.subtitle.value,
           venue: formGroupInfo.venue.value,
           casts: JSON.stringify(casts),
-          castFeatures:JSON.stringify(castFeatures),
+          castFeatures: JSON.stringify(castFeatures),
           script: JSON.stringify(fullScript),
         })
           .unwrap()
@@ -330,7 +345,6 @@ export function EditScenario() {
           onChange={handleInputChange}
           onKeyDown={handleOnKeyDown}
         />
-        <br></br>
         {castFeatures &&
           castFeatures.map((cI, index) => (
             <Card
